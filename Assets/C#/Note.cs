@@ -8,31 +8,30 @@ public class Note : MonoBehaviour
 
     [SerializeField] float timer = 0f;
     [SerializeField] float wantTime;
-    Player _PlayerObj;
-    Player _PlayerCode;
+    LNGame _LNGame;
+    LNGame _LNGameCode;
     Rail _Rail;
-    float noteSpeed;
-    bool clicked = false;
-    float missTime = 90;
-    float goodTime = 60;
-    float pertectTime = 30;
+    private float noteSpeed;
+    private bool clicked = false;
+    private float missTime = 90;
+    private float goodTime = 60;
+    private float pertectTime = 30;
     void Start()
     {
-        _PlayerObj = FindObjectOfType<Player>();
-        _PlayerCode = _PlayerObj.GetComponent<Player>();
+        _LNGame = FindObjectOfType<LNGame>();
+        _LNGameCode = _LNGame.GetComponent<LNGame>();
         _Rail = transform.parent.GetComponent<Rail>();
-        noteSpeed = _PlayerCode.noteSpeed;
+        noteSpeed = _LNGameCode.noteSpeed;
         timer = 0;
         wantTime = (_Rail.distanceFromStartToDestnation) / noteSpeed;
     }
     void Update()
     {
         timer += Time.deltaTime;
-        float ms = (timer - wantTime)*1000;
-        if (ms > 90)
+        float msAfterWantTime = (timer - wantTime)*1000;
+        if (msAfterWantTime > 90)
         {
-            _PlayerCode.missCount++;
-            _PlayerCode.combo = 0;
+            _LNGameCode.Miss();
             Destroy(gameObject);
         }
         Vector3 v3 = new Vector3(-1*noteSpeed*Time.deltaTime, 0f);
@@ -70,20 +69,17 @@ public class Note : MonoBehaviour
     }
     private void Perfect()
     {
-        _PlayerCode.perfectCount++;
-        _PlayerCode.combo++;
+        _LNGameCode.Perfect();
         Instantiate(effects[0]);
     }
     private void Good()
     {
-        _PlayerCode.goodCount++;
-        _PlayerCode.combo++;
+        _LNGameCode.Good();
         Instantiate(effects[1]);
     }
     private void Miss()
     {
-        _PlayerCode.missCount++;
-        _PlayerCode.combo = 0;
+        _LNGameCode.Miss();
         Instantiate(effects[2]);
     }
 }

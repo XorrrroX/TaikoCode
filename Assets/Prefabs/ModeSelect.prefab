@@ -46,6 +46,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a9730dbddfcae44683489747658894a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  LNModeSetting: {fileID: 5778254819681749354, guid: 4dc21e5991f36114b9ae4023ead391b3, type: 3}
+  setting: {fileID: 905220150126306512, guid: 9b7c83d07d486d84fbb3ec3269bd8f62, type: 3}
 --- !u!1 &1161307692960940258
 GameObject:
   m_ObjectHideFlags: 0
@@ -170,7 +172,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 6583622868117650753}
         m_TargetAssemblyTypeName: ModeSelect, Assembly-CSharp
-        m_MethodName: CallGOToSetting
+        m_MethodName: SwitchToSetting
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -438,7 +440,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 6583622868117650753}
         m_TargetAssemblyTypeName: ModeSelect, Assembly-CSharp
-        m_MethodName: CallGOToLNMode
+        m_MethodName: SwitchToLNModeSetting
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

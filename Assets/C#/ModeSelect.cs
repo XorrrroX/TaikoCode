@@ -4,14 +4,16 @@ using UnityEngine;
 
 public class ModeSelect : MonoBehaviour
 {
-    public void CallGOToLNMode()
+    [SerializeField] GameObject LNModeSetting;
+    [SerializeField] GameObject setting;
+    public void SwitchToLNModeSetting()
     {
-        FindObjectOfType<Player>().GetComponent<Player>().GoToLNMode();
+        Instantiate(LNModeSetting);
         Destroy(gameObject);
     }
-    public void CallGOToSetting()
+    public void SwitchToSetting()
     {
-        FindObjectOfType<Player>().GetComponent<Player>().GoToSetting();
+        Instantiate(setting);
         Destroy(gameObject);
     }
     public void Quit()

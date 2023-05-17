@@ -661,6 +661,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3fd9b621ea075c4d89cb2bfd8c12449, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  modeSelect: {fileID: 746255271199603576, guid: c9b478b11cfa67d4aad67678f6951977, type: 3}
   LeftKaText: {fileID: 905220151293426284}
   LeftDonText: {fileID: 905220149895644643}
   RightDonText: {fileID: 905220150031621283}
@@ -953,7 +954,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 905220150126306526}
         m_TargetAssemblyTypeName: Setting, Assembly-CSharp
-        m_MethodName: CallGoToModeSelect
+        m_MethodName: SwitchToModeSelect
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

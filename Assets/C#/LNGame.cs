@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -8,6 +9,7 @@ public class LNGame : MonoBehaviour
 {
     float timer = 0f;
     float coldTime;
+    [SerializeField] GameObject result;
     [SerializeField] GameObject DonRail;
     [SerializeField] GameObject KaRail;
     [SerializeField] Text Combo;
@@ -19,21 +21,51 @@ public class LNGame : MonoBehaviour
     public int floor = 0;
     public float D;
     float wantTime = 0;
+
+    private int BPM;
+    private int length;
+    private int times;
+    private float HS;
+    private string spawnMode;
+    public float noteSpeed;
+
+    private int combo = 0;
+    private int perfectCount = 0;
+    private int goodCount = 0;
+    private int missCount = 0;
     void Start()
     {
-        coldTime = 1f / (FindObjectOfType<Player>().GetComponent<Player>().BPM / 60f) / 4f;
+        LoadLNSettingData();
+        noteSpeed = HS / (60f / (BPM * 4f));
+        coldTime = 1f / (BPM / 60f) / 4f;
         InvokeRepeating("Spawn",0f,coldTime);
+    }
+    private void LoadLNSettingData()
+    {
+        FileStream fs = new FileStream(Application.dataPath + "/LNSettingData.txt", FileMode.Open);
+        StreamReader sr = new StreamReader(fs);
+        string test = sr.ReadLine();
+        if (test != null)
+        {
+            BPM = int.Parse(test);
+            length = int.Parse(sr.ReadLine());
+            times = int.Parse(sr.ReadLine());
+            HS = float.Parse(sr.ReadLine());
+            spawnMode = sr.ReadLine();
+        }
+        sr.Close();
+        fs.Close();
     }
     void Update()
     {
         timer += Time.deltaTime;
-        Combo.text = FindObjectOfType<Player>().GetComponent<Player>().combo.ToString();
+        Combo.text = combo.ToString();
     }
     void AllDonSpawn()
     {
-        if (nowTimes < FindObjectOfType<Player>().GetComponent<Player>().times)
+        if (nowTimes < times)
         {
-            if (noteCount < FindObjectOfType<Player>().GetComponent<Player>().length)
+            if (noteCount < length)
             {
                 DonSpawn();
                 noteCount++;
@@ -48,15 +80,15 @@ public class LNGame : MonoBehaviour
         {
             if (DonRail.transform.childCount == 0 && KaRail.transform.childCount == 0)
             {
-                CallEndGame();
+                EndGame();
             }
         }
     }
     void AllKaSpawn()
     {
-        if (nowTimes < FindObjectOfType<Player>().GetComponent<Player>().times)
+        if (nowTimes < times)
         {
-            if (noteCount < FindObjectOfType<Player>().GetComponent<Player>().length)
+            if (noteCount < length)
             {
                 KaSpawn();
                 noteCount++;
@@ -71,13 +103,13 @@ public class LNGame : MonoBehaviour
         {
             if (DonRail.transform.childCount == 0 && KaRail.transform.childCount == 0)
             {
-                CallEndGame();
+                EndGame();
             }
         }
     }
     void AllDonOrAllKaSpawn()
     {
-        if (nowTimes < FindObjectOfType<Player>().GetComponent<Player>().times)
+        if (nowTimes < times)
         {
 
             if (noteCount == 0)
@@ -87,7 +119,7 @@ public class LNGame : MonoBehaviour
             switch (random)
             {
                 case 0:
-                    if (noteCount < FindObjectOfType<Player>().GetComponent<Player>().length)
+                    if (noteCount < length)
                     {
                         DonSpawn();
                         noteCount++;
@@ -99,7 +131,7 @@ public class LNGame : MonoBehaviour
                     }
                     break;
                 case 1:
-                    if (noteCount < FindObjectOfType<Player>().GetComponent<Player>().length)
+                    if (noteCount < length)
                     {
                         KaSpawn();
                         noteCount++;
@@ -117,20 +149,20 @@ public class LNGame : MonoBehaviour
         {
             if (DonRail.transform.childCount == 0 && KaRail.transform.childCount == 0)
             {
-                CallEndGame();
+                EndGame();
             }
         }
     }
     void TwoTwoSpawn()
     {
-        if (nowTimes < FindObjectOfType<Player>().GetComponent<Player>().times)
+        if (nowTimes < times)
         {
             if (noteCount == 0 || twotwo == 2)
             {
                 random = Random.Range(0, 2);
                 twotwo = 0;
             }
-            if (noteCount < FindObjectOfType<Player>().GetComponent<Player>().length)
+            if (noteCount < length)
             {
                 switch (random)
                 {
@@ -156,15 +188,15 @@ public class LNGame : MonoBehaviour
         {
             if (DonRail.transform.childCount == 0 && KaRail.transform.childCount == 0)
             {
-                CallEndGame();
+                EndGame();
             }
         }
     }
     void FreeSpawn()
     {
-        if (nowTimes < FindObjectOfType<Player>().GetComponent<Player>().times)
+        if (nowTimes < times)
         {
-            if (noteCount < FindObjectOfType<Player>().GetComponent<Player>().length)
+            if (noteCount < length)
             {
                 random = Random.Range(0, 2);
                 switch (random)
@@ -189,7 +221,7 @@ public class LNGame : MonoBehaviour
         {
             if (DonRail.transform.childCount == 0 && KaRail.transform.childCount == 0)
             {
-                CallEndGame();
+                EndGame();
             }
         }
     }
@@ -243,10 +275,21 @@ public class LNGame : MonoBehaviour
             }
         }
     }
-    void CallEndGame()
+    void EndGame()
     {
-        FindObjectOfType<Player>().GetComponent<Player>().EndGame();
+        SaveResultData();
+        Instantiate(result);
         Destroy(gameObject);
+    }
+    private void SaveResultData()
+    {
+        FileStream fs = new FileStream(Application.dataPath + "/resultData.txt", FileMode.Create);
+        StreamWriter sw = new StreamWriter(fs);
+        sw.WriteLine(perfectCount);
+        sw.WriteLine(goodCount);
+        sw.WriteLine(missCount);
+        sw.Close();
+        fs.Close();
     }
     void Spawn()
     {
@@ -258,7 +301,7 @@ public class LNGame : MonoBehaviour
             else if(StartCount < 32)
             {
                 StartCount++;
-                switch(FindObjectOfType<Player>().GetComponent<Player>().spawnMode)
+                switch(spawnMode)
                 {
                     case "AllDon":
                         AllDonSpawn();
@@ -279,7 +322,7 @@ public class LNGame : MonoBehaviour
             }
             else
             {
-                switch(FindObjectOfType<Player>().GetComponent<Player>().spawnMode)
+                switch(spawnMode)
                 {
                     case "AllDon":
                         AllDonSpawn();
@@ -299,4 +342,21 @@ public class LNGame : MonoBehaviour
                 }
             }
     }
+    public void Perfect()
+    {
+        perfectCount++;
+        combo++;
+    }
+    public void Good()
+    {
+        goodCount++;
+        combo++;
+    }
+    public void Miss()
+    {
+        missCount++;
+        combo = 0;
+    }
+
+
 }

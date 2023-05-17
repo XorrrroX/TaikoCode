@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 
 public class Setting : MonoBehaviour
 {
+    [SerializeField] GameObject modeSelect;
     public Text LeftKaText;
     public Text LeftDonText;
     public Text RightDonText;
@@ -17,9 +18,9 @@ public class Setting : MonoBehaviour
         RightDonText.text = FindObjectOfType<Player>().GetComponent<Player>().rightDon;
         RightKaText.text = FindObjectOfType<Player>().GetComponent<Player>().rightKa;
     }
-    public void CallGoToModeSelect()
+    public void SwitchToModeSelect()
     {
-        FindObjectOfType<Player>().GetComponent<Player>().GoToModeSelect();
+        Instantiate(modeSelect);
         Destroy(gameObject);
     }
     public void CallRebindingLeftKa()

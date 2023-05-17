@@ -1,162 +1,212 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class LNSetting : MonoBehaviour
 {
+    [SerializeField] GameObject modeSelect;
+    [SerializeField] GameObject LNGame;
+    private int BPM = 180;
+    private int length = 5;
+    private int times = 3;
+    private float HS = 1;
+    private string spawnMode = "AllDon";
     public Text BPMText;
     public Text lengthText;
     public Text timesText;
     public Text HSText;
     void Start()
     {
-        
-        BPMText.text = FindObjectOfType<Player>().GetComponent<Player>().BPM.ToString();
-        lengthText.text = FindObjectOfType<Player>().GetComponent<Player>().length.ToString();
-        timesText.text = FindObjectOfType<Player>().GetComponent<Player>().times.ToString();
-        HSText.text = FindObjectOfType<Player>().GetComponent<Player>().HS.ToString();
+        LoadLNSettingData();
+        UpdateTexts();
     }
-    public void CallGoToModeSelect()
+    private void LoadLNSettingData()
     {
-        FindObjectOfType<Player>().GetComponent<Player>().GoToModeSelect();
+        FileStream fs = new FileStream(Application.dataPath + "/LNSettingData.txt", FileMode.Open);
+        StreamReader sr = new StreamReader(fs);
+        string test = sr.ReadLine();
+        if (test != null)
+        {
+            BPM = int.Parse(test);
+            length = int.Parse(sr.ReadLine());
+            times = int.Parse(sr.ReadLine());
+            HS = float.Parse(sr.ReadLine());
+            spawnMode = sr.ReadLine();
+        }
+        sr.Close();
+        fs.Close();
+    }
+    private void UpdateTexts()
+    {
+        BPMText.text = BPM.ToString();
+        lengthText.text = length.ToString();
+        timesText.text = times.ToString();
+        HSText.text = HS.ToString();
+    }
+    public void SwitchToModeSelect()
+    {
+        Instantiate(modeSelect);
         Destroy(gameObject);
     }
-    public void CallGoToLNGame()
+    public void StartGame()
     {
-        FindObjectOfType<Player>().GetComponent<Player>().GoToLNGame();
+        SaveLNSettingData();
+        Instantiate(LNGame);
         Destroy(gameObject);
+    }
+    private void SaveLNSettingData()
+    {
+        FileStream fs = new FileStream(Application.dataPath + "/LNSettingData.txt", FileMode.Create);
+        StreamWriter sw = new StreamWriter(fs);
+        sw.WriteLine(BPM);
+        sw.WriteLine(length);
+        sw.WriteLine(times);
+        sw.WriteLine(HS);
+        sw.WriteLine(spawnMode);
+        sw.Close();
+        fs.Close();
+        Debug.Log("Àx¦s");
     }
     public void BPMMinus5()
     {
-        FindObjectOfType<Player>().GetComponent<Player>().BPM = FindObjectOfType<Player>().GetComponent<Player>().BPM - 5;
-        if (FindObjectOfType<Player>().GetComponent<Player>().BPM <= 0)
+        BPM = BPM - 5;
+        if (BPM <= 0)
         {
-            FindObjectOfType<Player>().GetComponent<Player>().BPM = 1;
+            BPM = 1;
         }
-        BPMText.text = FindObjectOfType<Player>().GetComponent<Player>().BPM.ToString();
+        BPMText.text = BPM.ToString();
     }
     public void BPMMinus1()
     {
-        FindObjectOfType<Player>().GetComponent<Player>().BPM = FindObjectOfType<Player>().GetComponent<Player>().BPM - 1;
-        if (FindObjectOfType<Player>().GetComponent<Player>().BPM <= 0)
+        BPM = BPM - 1;
+        if (BPM <= 0)
         {
-            FindObjectOfType<Player>().GetComponent<Player>().BPM = 1;
+            BPM = 1;
         }
-        BPMText.text = FindObjectOfType<Player>().GetComponent<Player>().BPM.ToString();
+        BPMText.text = BPM.ToString();
     }
     public void BPMAdd1()
     {
-        FindObjectOfType<Player>().GetComponent<Player>().BPM = FindObjectOfType<Player>().GetComponent<Player>().BPM + 1;
-        BPMText.text = FindObjectOfType<Player>().GetComponent<Player>().BPM.ToString();
+        BPM = BPM + 1;
+        BPMText.text = BPM.ToString();
     }
     public void BPMAdd5()
     {
-        FindObjectOfType<Player>().GetComponent<Player>().BPM = FindObjectOfType<Player>().GetComponent<Player>().BPM + 5;
-        BPMText.text = FindObjectOfType<Player>().GetComponent<Player>().BPM.ToString();
+        BPM = BPM + 5;
+        BPMText.text = BPM.ToString();
     }
     public void LengthMinus5()
     {
-        FindObjectOfType<Player>().GetComponent<Player>().length = FindObjectOfType<Player>().GetComponent<Player>().length - 5;
-        if (FindObjectOfType<Player>().GetComponent<Player>().length <= 0)
+        length = length - 5;
+        if (length <= 0)
         {
-            FindObjectOfType<Player>().GetComponent<Player>().length = 1;
+            length = 1;
         }
-        lengthText.text = FindObjectOfType<Player>().GetComponent<Player>().length.ToString();
+        lengthText.text = length.ToString();
     }
     public void LengthMinus1()
     {
-        FindObjectOfType<Player>().GetComponent<Player>().length = FindObjectOfType<Player>().GetComponent<Player>().length - 1;
-        if (FindObjectOfType<Player>().GetComponent<Player>().length <= 0)
+        length = length - 1;
+        if (length <= 0)
         {
-            FindObjectOfType<Player>().GetComponent<Player>().length = 1;
+            length = 1;
         }
-        lengthText.text = FindObjectOfType<Player>().GetComponent<Player>().length.ToString();
+        lengthText.text = length.ToString();
     }
     public void LengthAdd1()
     {
-        FindObjectOfType<Player>().GetComponent<Player>().length = FindObjectOfType<Player>().GetComponent<Player>().length + 1;
-        lengthText.text = FindObjectOfType<Player>().GetComponent<Player>().length.ToString();
+        length = length + 1;
+        lengthText.text = length.ToString();
     }
     public void LengthAdd5()
     {
-        FindObjectOfType<Player>().GetComponent<Player>().length = FindObjectOfType<Player>().GetComponent<Player>().length + 5;
-        lengthText.text = FindObjectOfType<Player>().GetComponent<Player>().length.ToString();
+        length = length + 5;
+        lengthText.text = length.ToString();
     }
     public void TimesMinus5()
     {
-        FindObjectOfType<Player>().GetComponent<Player>().times = FindObjectOfType<Player>().GetComponent<Player>().times - 5;
-        if (FindObjectOfType<Player>().GetComponent<Player>().times <= 0)
+        times = times - 5;
+        if (times <= 0)
         {
-            FindObjectOfType<Player>().GetComponent<Player>().times = 1;
+            times = 1;
         }
-        timesText.text = FindObjectOfType<Player>().GetComponent<Player>().times.ToString();
+        timesText.text = times.ToString();
     }
     public void TimesMinus1()
     {
-        FindObjectOfType<Player>().GetComponent<Player>().times = FindObjectOfType<Player>().GetComponent<Player>().times - 1;
-        if (FindObjectOfType<Player>().GetComponent<Player>().times <= 0)
+        times = times - 1;
+        if (times <= 0)
         {
-            FindObjectOfType<Player>().GetComponent<Player>().times = 1;
+            times = 1;
         }
-        timesText.text = FindObjectOfType<Player>().GetComponent<Player>().times.ToString();
+        timesText.text = times.ToString();
     }
     public void TimesAdd1()
     {
-        FindObjectOfType<Player>().GetComponent<Player>().times = FindObjectOfType<Player>().GetComponent<Player>().times + 1;
-        timesText.text = FindObjectOfType<Player>().GetComponent<Player>().times.ToString();
+        times = times + 1;
+        timesText.text = times.ToString();
     }
     public void TimesAdd5()
     {
-        FindObjectOfType<Player>().GetComponent<Player>().times = FindObjectOfType<Player>().GetComponent<Player>().times + 5;
-        timesText.text = FindObjectOfType<Player>().GetComponent<Player>().times.ToString();
+        times = times + 5;
+        timesText.text = times.ToString();
     }
     public void HSMinus1()
     {
-        FindObjectOfType<Player>().GetComponent<Player>().HS = FindObjectOfType<Player>().GetComponent<Player>().HS - 1f;
-        if(FindObjectOfType<Player>().GetComponent<Player>().HS <= 0f)
+        HS = HS - 1f;
+        if(HS <= 0f)
         {
-            FindObjectOfType<Player>().GetComponent<Player>().HS = 0.1f;
+            HS = 0.1f;
         }
-        HSText.text = FindObjectOfType<Player>().GetComponent<Player>().HS.ToString();
+        //RoundHS();
+        HSText.text = HS.ToString();
     }
-    public void HSMinus0()
+    public void HSMinusPointOne()
     {
-        FindObjectOfType<Player>().GetComponent<Player>().HS = FindObjectOfType<Player>().GetComponent<Player>().HS - 0.1f;
-        if(FindObjectOfType<Player>().GetComponent<Player>().HS <= 0f)
+        HS = HS - 0.1f;
+        if(HS <= 0f)
         {
-            FindObjectOfType<Player>().GetComponent<Player>().HS = 0.1f;
+            HS = 0.1f;
         }
-        HSText.text = FindObjectOfType<Player>().GetComponent<Player>().HS.ToString();
+        //RoundHS();
+        HSText.text = HS.ToString();
     }
-    public void HSAdd0()
+    public void HSAddPointOne()
     {
-        FindObjectOfType<Player>().GetComponent<Player>().HS = FindObjectOfType<Player>().GetComponent<Player>().HS + 0.1f;
-        HSText.text = FindObjectOfType<Player>().GetComponent<Player>().HS.ToString();
+        HS = HS + 0.1f;
+        //RoundHS();
+        HSText.text = HS.ToString();
     }
     public void HSAdd1()
     {
-        FindObjectOfType<Player>().GetComponent<Player>().HS = FindObjectOfType<Player>().GetComponent<Player>().HS + 1f;
-        HSText.text = FindObjectOfType<Player>().GetComponent<Player>().HS.ToString();
+        HS = HS + 1f;
+        //RoundHS();
+        HS.ToString();
+    }
+    private void RoundHS()
+    {
+        HS = Mathf.Round(HS * 10f) / 10f;
     }
     public void spawnModeAllDon()
     {
-        FindObjectOfType<Player>().GetComponent<Player>().spawnMode = "AllDon";
+        spawnMode = "AllDon";
     }
     public void spawnModeAllKa()
     {
-        FindObjectOfType<Player>().GetComponent<Player>().spawnMode = "AllKa";
+        spawnMode = "AllKa";
     }
     public void spawnModeAllDonOrAllKa()
     {
-        FindObjectOfType<Player>().GetComponent<Player>().spawnMode = "AllDonOrAllKa";
+        spawnMode = "AllDonOrAllKa";
     }
     public void spawnModeTwoTwo()
     {
-        FindObjectOfType<Player>().GetComponent<Player>().spawnMode = "TwoTwo";
+        spawnMode = "TwoTwo";
     }
     public void spawnModeFree()
     {
-        FindObjectOfType<Player>().GetComponent<Player>().spawnMode = "Free";
+        spawnMode = "Free";
     }
 }
